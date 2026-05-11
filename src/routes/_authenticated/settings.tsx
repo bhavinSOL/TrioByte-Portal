@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { PageBody, PageHeader } from "@/components/portal/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTheme, type Theme } from "@/lib/theme";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -27,11 +28,80 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function SettingsPage() {
   const { theme, setTheme } = useTheme();
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [preferences, setPreferences] = useState({
+    timezone: "UTC",
+    work_start_time: "09:00",
+    work_end_time: "18:00",
+    notifications_enabled: true,
+    email_notifications: true,
+  });
+  const [isSavingPrefs, setIsSavingPrefs] = useState(false);
+  const [isLoadingPrefs, setIsLoadingPrefs] = useState(true);
+
+  useEffect(() => {
+    loadPreferences();
+  }, [profile?.id]);
+
+  const loadPreferences = async () => {
+    try {
+      const { data } = await (supabase as any)
+        .from("user_preferences")
+        .select("*")
+        .eq("user_id", profile?.id)
+        .maybeSingle();
+
+      if (data) {
+        setPreferences({
+          timezone: data.timezone || "UTC",
+          work_start_time: data.work_start_time || "09:00",
+          work_end_time: data.work_end_time || "18:00",
+          notifications_enabled: data.notifications_enabled !== false,
+          email_notifications: data.email_notifications !== false,
+        });
+      }
+    } catch (error) {
+      // Ignore if table doesn't exist yet
+    } finally {
+      setIsLoadingPrefs(false);
+    }
+  };
+
+  const savePreferences = async () => {
+    try {
+      setIsSavingPrefs(true);
+
+      const { data: existing } = await (supabase as any)
+        .from("user_preferences")
+        .select("id")
+        .eq("user_id", profile?.id)
+        .maybeSingle();
+
+      if (existing) {
+        await (supabase as any)
+          .from("user_preferences")
+          .update(preferences)
+          .eq("user_id", profile?.id);
+      } else {
+        await (supabase as any)
+          .from("user_preferences")
+          .insert({
+            user_id: profile?.id,
+            ...preferences,
+          });
+      }
+
+      toast.success("Preferences saved");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsSavingPrefs(false);
+    }
+  };
 
   const onChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,6 +154,78 @@ function SettingsPage() {
                 );
               })}
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Work Preferences</CardTitle>
+            <CardDescription>Set your work hours, timezone, and notification settings.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="start_time">Start time</Label>
+                <Input
+                  id="start_time"
+                  type="time"
+                  value={preferences.work_start_time}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, work_start_time: e.target.value }))}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="end_time">End time</Label>
+                <Input
+                  id="end_time"
+                  type="time"
+                  value={preferences.work_end_time}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, work_end_time: e.target.value }))}
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="timezone">Timezone</Label>
+              <Select value={preferences.timezone} onValueChange={(value) => setPreferences(prev => ({ ...prev, timezone: value }))}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="UTC">UTC</SelectItem>
+                  <SelectItem value="EST">EST (Eastern)</SelectItem>
+                  <SelectItem value="CST">CST (Central)</SelectItem>
+                  <SelectItem value="MST">MST (Mountain)</SelectItem>
+                  <SelectItem value="PST">PST (Pacific)</SelectItem>
+                  <SelectItem value="IST">IST (India)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-3">
+              <div className="text-sm font-medium">Notifications</div>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={preferences.notifications_enabled}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, notifications_enabled: e.target.checked }))}
+                  className="rounded border-gray-300"
+                />
+                <span className="text-sm">In-app notifications</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={preferences.email_notifications}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, email_notifications: e.target.checked }))}
+                  className="rounded border-gray-300"
+                />
+                <span className="text-sm">Email notifications</span>
+              </label>
+            </div>
+            <Button onClick={savePreferences} disabled={isSavingPrefs} variant="secondary">
+              {isSavingPrefs && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save preferences
+            </Button>
           </CardContent>
         </Card>
 

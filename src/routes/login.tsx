@@ -48,12 +48,32 @@ function LoginPage() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
+    const { error, data } = await supabase.auth.signInWithPassword(parsed.data);
     setSubmitting(false);
     if (error) {
       toast.error(error.message);
       return;
     }
+
+    // Log login attendance
+    if (data.user?.id) {
+      try {
+        const today = new Date().toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
+        await (supabase as any)
+          .from("attendance")
+          .upsert({
+            user_id: data.user.id,
+            date: today,
+            login_time: new Date().toISOString(),
+            status: "present",
+          }, {
+            onConflict: "user_id,date"
+          });
+      } catch (error: any) {
+        console.error("Failed to log login attendance:", error);
+      }
+    }
+
     toast.success("Welcome back");
   };
 

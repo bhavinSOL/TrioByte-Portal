@@ -19,6 +19,7 @@ import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/t
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedRolesRouteImport } from './routes/_authenticated/roles'
+import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPayrollRouteImport } from './routes/_authenticated/payroll'
 import { Route as AuthenticatedLeaveRouteImport } from './routes/_authenticated/leave'
@@ -27,6 +28,7 @@ import { Route as AuthenticatedExecutiveRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCodeRouteImport } from './routes/_authenticated/code'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedAttendanceSettingsRouteImport } from './routes/_authenticated/attendance-settings'
 import { Route as AuthenticatedAttendanceRouteImport } from './routes/_authenticated/attendance'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -78,6 +80,11 @@ const AuthenticatedRolesRoute = AuthenticatedRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -118,6 +125,12 @@ const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAttendanceSettingsRoute =
+  AuthenticatedAttendanceSettingsRouteImport.update({
+    id: '/attendance-settings',
+    path: '/attendance-settings',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAttendanceRoute = AuthenticatedAttendanceRouteImport.update({
   id: '/attendance',
   path: '/attendance',
@@ -131,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/attendance': typeof AuthenticatedAttendanceRoute
+  '/attendance-settings': typeof AuthenticatedAttendanceSettingsRoute
   '/chat': typeof AuthenticatedChatRoute
   '/code': typeof AuthenticatedCodeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -139,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/leave': typeof AuthenticatedLeaveRoute
   '/payroll': typeof AuthenticatedPayrollRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/projects': typeof AuthenticatedProjectsRoute
   '/roles': typeof AuthenticatedRolesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -151,6 +166,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/attendance': typeof AuthenticatedAttendanceRoute
+  '/attendance-settings': typeof AuthenticatedAttendanceSettingsRoute
   '/chat': typeof AuthenticatedChatRoute
   '/code': typeof AuthenticatedCodeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -159,6 +175,7 @@ export interface FileRoutesByTo {
   '/leave': typeof AuthenticatedLeaveRoute
   '/payroll': typeof AuthenticatedPayrollRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/projects': typeof AuthenticatedProjectsRoute
   '/roles': typeof AuthenticatedRolesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -173,6 +190,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/attendance': typeof AuthenticatedAttendanceRoute
+  '/_authenticated/attendance-settings': typeof AuthenticatedAttendanceSettingsRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/code': typeof AuthenticatedCodeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -181,6 +199,7 @@ export interface FileRoutesById {
   '/_authenticated/leave': typeof AuthenticatedLeaveRoute
   '/_authenticated/payroll': typeof AuthenticatedPayrollRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/roles': typeof AuthenticatedRolesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -195,6 +214,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/attendance'
+    | '/attendance-settings'
     | '/chat'
     | '/code'
     | '/dashboard'
@@ -203,6 +223,7 @@ export interface FileRouteTypes {
     | '/leave'
     | '/payroll'
     | '/profile'
+    | '/projects'
     | '/roles'
     | '/settings'
     | '/tasks'
@@ -215,6 +236,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/attendance'
+    | '/attendance-settings'
     | '/chat'
     | '/code'
     | '/dashboard'
@@ -223,6 +245,7 @@ export interface FileRouteTypes {
     | '/leave'
     | '/payroll'
     | '/profile'
+    | '/projects'
     | '/roles'
     | '/settings'
     | '/tasks'
@@ -236,6 +259,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/_authenticated/attendance'
+    | '/_authenticated/attendance-settings'
     | '/_authenticated/chat'
     | '/_authenticated/code'
     | '/_authenticated/dashboard'
@@ -244,6 +268,7 @@ export interface FileRouteTypes {
     | '/_authenticated/leave'
     | '/_authenticated/payroll'
     | '/_authenticated/profile'
+    | '/_authenticated/projects'
     | '/_authenticated/roles'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
@@ -331,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRolesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/projects': {
+      id: '/_authenticated/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
@@ -387,6 +419,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/attendance-settings': {
+      id: '/_authenticated/attendance-settings'
+      path: '/attendance-settings'
+      fullPath: '/attendance-settings'
+      preLoaderRoute: typeof AuthenticatedAttendanceSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/attendance': {
       id: '/_authenticated/attendance'
       path: '/attendance'
@@ -399,6 +438,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAttendanceRoute: typeof AuthenticatedAttendanceRoute
+  AuthenticatedAttendanceSettingsRoute: typeof AuthenticatedAttendanceSettingsRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedCodeRoute: typeof AuthenticatedCodeRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -407,6 +447,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLeaveRoute: typeof AuthenticatedLeaveRoute
   AuthenticatedPayrollRoute: typeof AuthenticatedPayrollRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -415,6 +456,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAttendanceRoute: AuthenticatedAttendanceRoute,
+  AuthenticatedAttendanceSettingsRoute: AuthenticatedAttendanceSettingsRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedCodeRoute: AuthenticatedCodeRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
@@ -423,6 +465,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLeaveRoute: AuthenticatedLeaveRoute,
   AuthenticatedPayrollRoute: AuthenticatedPayrollRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedRolesRoute: AuthenticatedRolesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
@@ -444,3 +487,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

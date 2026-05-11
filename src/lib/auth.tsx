@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { autoLoginUser, checkAndAutoLogout } from "@/lib/attendance-service";
 
 export type AppRole = "employee" | "hr_admin" | "founder";
 
@@ -47,6 +48,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ]);
     setProfile(profileData ?? null);
     setRoles((roleData ?? []).map((r: { role: AppRole }) => r.role));
+
+    // Auto-login on first app access
+    if (profileData && (roleData ?? []).some((r: any) => r.role === "employee")) {
+      await autoLoginUser(userId);
+    }
   };
 
   useEffect(() => {
@@ -73,11 +79,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Setup auto-logout check interval (every minute)
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    const interval = setInterval(async () => {
+      await checkAndAutoLogout(session.user.id);
+    }, 60000); // Check every minute
+
+    // Also check immediately on mount
+    checkAndAutoLogout(session.user.id);
+
+    return () => clearInterval(interval);
+  }, [session?.user?.id]);
+
   const refresh = async () => {
     if (session?.user) await loadProfile(session.user.id);
   };
 
   const signOut = async () => {
+    // Log logout attendance before signing out
+    if (session?.user?.id) {
+      try {
+        const today = new Date().toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
+        await (supabase as any)
+          .from("attendance")
+          .update({ logout_time: new Date().toISOString() })
+          .eq("user_id", session.user.id)
+          .eq("date", today);
+      } catch (error) {
+        console.error("Failed to log logout attendance:", error);
+      }
+    }
     await supabase.auth.signOut();
     setProfile(null);
     setRoles([]);
