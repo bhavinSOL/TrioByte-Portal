@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "../lib/auth";
-import { PortalSidebar } from "@/components/portal/portal-sidebar";
+import { PortalSidebar } from "src/components/portal/portal-sidebar.tsx";
 import { Loader2, Ban } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 
