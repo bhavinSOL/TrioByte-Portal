@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageBody, PageHeader, Placeholder } from "@/components/portal/page-header";
-import { useAuth, roleLabel } from "@/lib/auth";
+import { useAuth, roleLabel } from "../../lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

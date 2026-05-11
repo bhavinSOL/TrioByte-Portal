@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { useAuth, type AppRole, roleLabel } from "@/lib/auth";
+import { useAuth, type AppRole, roleLabel } from "../../lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { PageBody, PageHeader, Placeholder } from "@/components/portal/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

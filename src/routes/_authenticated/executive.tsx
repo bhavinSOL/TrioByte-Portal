@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PageBody, PageHeader } from "@/components/portal/page-header";
 import { Crown, TrendingUp, Users, Briefcase, CheckCircle2, AlertCircle, DollarSign, Calendar } from "lucide-react";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "../../lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";

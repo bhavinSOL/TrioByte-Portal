@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import { autoLoginUser, checkAndAutoLogout } from "@/lib/attendance-service";
+import { supabase } from "../integrations/supabase/client";
+import { autoLoginUser, checkAndAutoLogout } from "./attendance-service";
 
 export type AppRole = "employee" | "hr_admin" | "founder";
 

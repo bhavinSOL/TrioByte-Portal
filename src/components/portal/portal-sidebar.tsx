@@ -18,7 +18,7 @@ import {
   X,
   Briefcase,
 } from "lucide-react";
-import { useAuth, type AppRole, roleLabel } from "@/lib/auth";
+import { useAuth, type AppRole, roleLabel } from "../../lib/auth";
 import { TrioByteMark } from "@/components/brand/triobyte-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

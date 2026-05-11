@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../integrations/supabase/client";
 
 export interface WorkingHours {
   start_time: string; // "HH:mm" format
