@@ -5,7 +5,7 @@ import { Crown, TrendingUp, Users, Briefcase, CheckCircle2, AlertCircle, DollarS
 import { useAuth } from "../../lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../../integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/executive")({

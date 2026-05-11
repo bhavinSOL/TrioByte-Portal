@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../../integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { Loader2, Calendar, Clock, ChevronLeft, ChevronRight, Edit2, Save, X } from "lucide-react";
 import { toast } from "sonner";

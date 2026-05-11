@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../../integrations/supabase/client";
 import { useState, useEffect, useRef } from "react";
 import { Loader2, Send, MessageSquare, Eye, Mic, FileUp, Search, X } from "lucide-react";
 import { toast } from "sonner";

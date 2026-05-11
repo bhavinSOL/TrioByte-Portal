@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../../integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { Loader2, Plus, Trash2, Edit2, Calendar, Users, Briefcase } from "lucide-react";
 import { toast } from "sonner";
