@@ -20,7 +20,7 @@ function AuthenticatedLayout() {
     if (loading) return;
     if (!session) navigate({ to: "/login" });
     else if (profile?.must_change_password) navigate({ to: "/change-password" });
-  }, [loading, session, profile, navigate]);
+  }, [loading, session, profile, navigate]); 
 
   if (loading || !session) {
     return (
