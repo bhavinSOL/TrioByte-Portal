@@ -46,6 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (supabase as any).from("profiles").select("*").eq("id", userId).maybeSingle(),
       (supabase as any).from("user_roles").select("role").eq("user_id", userId),
     ]);
+    if (profileData?.is_blocked) {
+      setProfile(null);
+      setRoles([]);
+      await supabase.auth.signOut();
+      return;
+    }
+
     setProfile(profileData ?? null);
     setRoles((roleData ?? []).map((r: { role: AppRole }) => r.role));
 

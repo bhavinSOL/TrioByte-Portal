@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2, Plus, Users } from "lucide-react";
+import { Loader2, Plus, Users, UserRoundX, UserRoundCheck } from "lucide-react";
 
 interface Row {
   id: string;
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/_authenticated/team")({
 });
 
 function TeamPage() {
-  const { primaryRole } = useAuth();
+  const { primaryRole, profile } = useAuth();
   const navigate = useNavigate();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,16 @@ function TeamPage() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const setOffboarded = async (row: Row) => {
+    const nextBlocked = !row.is_blocked;
+    if (nextBlocked && !window.confirm(`Offboard ${row.full_name ?? row.email ?? "this employee"}? They will lose access to the portal.`)) return;
+    if (nextBlocked && row.role === "founder") return toast.error("The founder account cannot be offboarded.");
+    const { error } = await (supabase as any).from("profiles").update({ is_blocked: nextBlocked, end_date: nextBlocked ? new Date().toISOString().slice(0, 10) : null }).eq("id", row.id);
+    if (error) return toast.error(error.message);
+    toast.success(nextBlocked ? "Employee offboarded" : "Employee access restored");
+    await load();
+  };
 
   return (
     <>
@@ -103,6 +113,12 @@ function TeamPage() {
                       <Badge variant="secondary">{roleLabel(r.role)}</Badge>
                       <Badge variant="outline">L{r.level}</Badge>
                       {r.is_blocked && <Badge variant="destructive">Blocked</Badge>}
+                      {r.id !== profile?.id && (
+                        <Button size="sm" variant="outline" onClick={() => setOffboarded(r)}>
+                          {r.is_blocked ? <UserRoundCheck className="mr-1 h-4 w-4" /> : <UserRoundX className="mr-1 h-4 w-4" />}
+                          {r.is_blocked ? "Restore" : "Offboard"}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
